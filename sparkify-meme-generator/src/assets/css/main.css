@@ -1,0 +1,125 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: "Tektur";
+  src: url("../fonts/Tektur.ttf");
+  font-style: normal;
+  font-display: swap;
+}
+html {
+  scroll-behavior: auto;
+}
+
+html,
+body {
+  overflow-x: hidden;
+}
+.page-enter-active,
+.page-leave-active {
+  transition: all 0.2s ease;
+}
+
+.page-enter-from,
+.page-leave-to {
+  opacity: 0;
+}
+
+.page-enter-to,
+.page-leave-from {
+  opacity: 1;
+}
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+}
+body {
+  bottom: 0; /* required */
+  width: 100%; /* required */
+  height: 100vh; /* required */
+}
+.scrollable {
+  overflow-y: scroll;
+}
+
+* {
+  font-family: "Tektur";
+}
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #171928 #171928;
+}
+
+*::-webkit-scrollbar {
+  width: 1px;
+  height: 1px;
+}
+
+.swiper {
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+}
+@keyframes float {
+  0% {
+    background-position: 0 0, 0 0, 0 0;
+  }
+  25% {
+    background-position: 50px 100px, 100px 150px, 150px 200px;
+  }
+  50% {
+    background-position: 200px 50px, 150px 100px, 100px 150px;
+  }
+  75% {
+    background-position: 100px 200px, 50px 150px, 200px 100px;
+  }
+  100% {
+    background-position: 0 0, 0 0, 0 0;
+  }
+}
+/* Firefox */
+input {
+  padding: 6px !important;
+  border: none;
+}
+@media only screen and (max-width: 767px) {
+  *::-webkit-scrollbar {
+    width: 1px;
+    height: 1px;
+  }
+}
+::-webkit-scrollbar-button {
+  width: 1px;
+  height: 1px;
+}
+::-webkit-scrollbar-thumb {
+  background: #171928;
+  border: 1px none #ffffff;
+  border-radius: 86px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #171928;
+}
+::-webkit-scrollbar-thumb:active {
+  background: #171928;
+}
+::-webkit-scrollbar-track {
+  background: #171928;
+  border: 1px none #ffffff;
+  border-radius: 101px;
+}
+::-webkit-scrollbar-track:hover {
+  background: #171928;
+}
+::-webkit-scrollbar-track:active {
+  background: #171928;
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */

@@ -14,6 +14,7 @@ import {
   MousePointer,
   Image,
   Move,
+  Layers,
 } from "lucide-react";
 import { CanvasState, CanvasMode } from "../types";
 
@@ -58,6 +59,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
     // Selection and Navigation
     {
       title: "Selection",
+      icon: MousePointer,
       tools: [
         {
           id: "select",
@@ -78,6 +80,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
     // History
     {
       title: "History",
+      icon: RotateCcw,
       tools: [
         {
           id: "undo",
@@ -98,6 +101,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
     // Zoom
     {
       title: "Zoom",
+      icon: ZoomIn,
       tools: [
         {
           id: "zoom-in",
@@ -116,6 +120,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
     // Content
     {
       title: "Add Content",
+      icon: Layers,
       tools: [
         {
           id: "add-text",
@@ -136,6 +141,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
     // Alignment
     {
       title: "Align",
+      icon: AlignCenter,
       tools: [
         {
           id: "align-left",
@@ -157,104 +163,160 @@ const Toolbar: React.FC<ToolbarProps> = ({
         },
       ],
     },
-    // Actions
+  ];
+
+  const actionTools = [
     {
-      title: "Actions",
-      tools: [
-        {
-          id: "reset",
-          icon: RotateCcw,
-          label: "Reset All",
-          onClick: onReset,
-          variant: "warning" as const,
-        },
-        {
-          id: "download",
-          icon: Download,
-          label: "Download",
-          onClick: onDownload,
-          variant: "success" as const,
-        },
-        {
-          id: "delete",
-          icon: Trash2,
-          label: "Delete",
-          onClick: onDelete,
-          variant: "danger" as const,
-        },
-      ],
+      id: "reset",
+      icon: RotateCcw,
+      label: "Reset All",
+      onClick: onReset,
+      variant: "warning" as const,
+    },
+    {
+      id: "download",
+      icon: Download,
+      label: "Download",
+      onClick: onDownload,
+      variant: "success" as const,
+    },
+    {
+      id: "delete",
+      icon: Trash2,
+      label: "Delete",
+      onClick: onDelete,
+      variant: "danger" as const,
     },
   ];
 
   const getButtonClasses = (tool: any) => {
-    const baseClasses = "toolbar-button";
-    const variantClasses = {
-      warning:
-        "hover:bg-yellow-50 hover:border-yellow-300 hover:text-yellow-700",
-      success: "hover:bg-green-50 hover:border-green-300 hover:text-green-700",
-      danger: "hover:bg-red-50 hover:border-red-300 hover:text-red-700",
-    };
-
-    let classes = baseClasses;
+    let classes =
+      "relative flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 ";
 
     if (tool.isActive) {
-      classes += " active";
+      classes += "bg-purple-600 text-white shadow-purple ";
+    } else if (tool.disabled) {
+      classes += "text-gray-500 cursor-not-allowed opacity-50 ";
+    } else {
+      classes += "text-gray-300 hover:text-white hover:bg-white/10 ";
     }
+
+    if (tool.variant) {
+      switch (tool.variant) {
+        case "warning":
+          classes += "hover:bg-warning-600 hover:text-white ";
+          break;
+        case "success":
+          classes += "hover:bg-success-600 hover:text-white ";
+          break;
+        case "danger":
+          classes += "hover:bg-error-600 hover:text-white ";
+          break;
+      }
+    }
+
+    return classes;
+  };
+
+  const getActionButtonClasses = (tool: any) => {
+    let classes =
+      "flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ";
 
     if (tool.disabled) {
-      classes += " opacity-50 cursor-not-allowed";
+      classes += "opacity-50 cursor-not-allowed ";
     }
 
-    if (tool.variant && variantClasses[tool.variant]) {
-      classes += ` ${variantClasses[tool.variant]}`;
+    switch (tool.variant) {
+      case "warning":
+        classes +=
+          "bg-warning-600 hover:bg-warning-700 text-white shadow-lg hover:shadow-xl transform hover:scale-105 ";
+        break;
+      case "success":
+        classes +=
+          "bg-success-600 hover:bg-success-700 text-white shadow-lg hover:shadow-xl transform hover:scale-105 ";
+        break;
+      case "danger":
+        classes +=
+          "bg-error-600 hover:bg-error-700 text-white shadow-lg hover:shadow-xl transform hover:scale-105 ";
+        break;
+      default:
+        classes += "bg-gray-600 hover:bg-gray-700 text-white ";
     }
 
     return classes;
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md border border-gray-200">
-      <div className="p-4">
-        <div className="flex flex-wrap gap-6">
-          {toolbarSections.map((section) => (
-            <div key={section.title} className="flex items-center gap-2">
-              <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+    <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+      {/* Tool Sections */}
+      <div className="flex flex-wrap gap-6">
+        {toolbarSections.map((section, sectionIndex) => (
+          <div
+            key={section.title}
+            className="flex flex-col space-y-2"
+            style={{ animationDelay: `${sectionIndex * 0.1}s` }}
+          >
+            <div className="flex items-center space-x-2 mb-2">
+              <section.icon className="w-4 h-4 text-purple-400" />
+              <span className="text-xs font-semibold text-gray-300 uppercase tracking-wider">
                 {section.title}
               </span>
-              <div className="flex gap-1">
-                {section.tools.map((tool) => {
-                  const IconComponent = tool.icon;
-                  return (
-                    <button
-                      key={tool.id}
-                      onClick={tool.onClick}
-                      disabled={tool.disabled}
-                      className={getButtonClasses(tool)}
-                      title={tool.label}
-                    >
-                      <IconComponent size={16} />
-                      <span className="hidden sm:inline">{tool.label}</span>
-                    </button>
-                  );
-                })}
-              </div>
             </div>
-          ))}
-        </div>
+            <div className="flex gap-1">
+              {section.tools.map((tool) => {
+                const IconComponent = tool.icon;
+                return (
+                  <button
+                    key={tool.id}
+                    onClick={tool.onClick}
+                    disabled={tool.disabled}
+                    className={getButtonClasses(tool)}
+                    title={tool.label}
+                  >
+                    <IconComponent size={16} />
+                    <span className="hidden sm:inline">{tool.label}</span>
+                    {tool.isActive && (
+                      <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-purple-400 rounded-full"></div>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        ))}
       </div>
 
-      {/* Canvas Info */}
-      <div className="px-4 py-2 bg-gray-50 border-t border-gray-200 rounded-b-lg">
-        <div className="flex justify-between items-center text-xs text-gray-600">
-          <div className="flex items-center gap-4">
+      {/* Action Buttons */}
+      <div className="flex items-center gap-3">
+        {actionTools.map((tool) => {
+          const IconComponent = tool.icon;
+          return (
+            <button
+              key={tool.id}
+              onClick={tool.onClick}
+              disabled={tool.disabled}
+              className={getActionButtonClasses(tool)}
+              title={tool.label}
+            >
+              <IconComponent size={16} />
+              <span className="hidden sm:inline">{tool.label}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Canvas Info - Mobile */}
+      <div className="lg:hidden w-full glass rounded-lg p-3 border border-white/10">
+        <div className="flex justify-between items-center text-xs text-gray-400">
+          <div className="flex items-center gap-3">
             <span>
               Canvas: {canvasState.width} × {canvasState.height}px
             </span>
             <span>Elements: {canvasState.elements.length}</span>
           </div>
           <div className="flex items-center gap-2">
-            <span>Mode: </span>
-            <span className="px-2 py-1 bg-primary-100 text-primary-800 rounded text-xs font-medium capitalize">
+            <span>Mode:</span>
+            <span className="px-2 py-1 bg-purple-500/20 text-purple-300 rounded text-xs font-medium capitalize">
               {currentMode}
             </span>
           </div>
