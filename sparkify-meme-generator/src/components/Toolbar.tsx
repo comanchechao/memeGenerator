@@ -56,7 +56,6 @@ const Toolbar: React.FC<ToolbarProps> = ({
   canRedo = false,
 }) => {
   const toolbarSections = [
-    // Selection and Navigation
     {
       title: "Selection",
       icon: MousePointer,
@@ -77,7 +76,6 @@ const Toolbar: React.FC<ToolbarProps> = ({
         },
       ],
     },
-    // History
     {
       title: "History",
       icon: RotateCcw,
@@ -98,26 +96,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
         },
       ],
     },
-    // Zoom
-    {
-      title: "Zoom",
-      icon: ZoomIn,
-      tools: [
-        {
-          id: "zoom-in",
-          icon: ZoomIn,
-          label: "Zoom In",
-          onClick: onZoomIn,
-        },
-        {
-          id: "zoom-out",
-          icon: ZoomOut,
-          label: "Zoom Out",
-          onClick: onZoomOut,
-        },
-      ],
-    },
-    // Content
+
     {
       title: "Add Content",
       icon: Layers,
@@ -138,7 +117,6 @@ const Toolbar: React.FC<ToolbarProps> = ({
         },
       ],
     },
-    // Alignment
     {
       title: "Align",
       icon: AlignCenter,
@@ -162,30 +140,6 @@ const Toolbar: React.FC<ToolbarProps> = ({
           onClick: onAlignRight,
         },
       ],
-    },
-  ];
-
-  const actionTools = [
-    {
-      id: "reset",
-      icon: RotateCcw,
-      label: "Reset All",
-      onClick: onReset,
-      variant: "warning" as const,
-    },
-    {
-      id: "download",
-      icon: Download,
-      label: "Download",
-      onClick: onDownload,
-      variant: "success" as const,
-    },
-    {
-      id: "delete",
-      icon: Trash2,
-      label: "Delete",
-      onClick: onDelete,
-      variant: "danger" as const,
     },
   ];
 
@@ -275,34 +229,12 @@ const Toolbar: React.FC<ToolbarProps> = ({
                   >
                     <IconComponent size={16} />
                     <span className="hidden sm:inline">{tool.label}</span>
-                    {tool.isActive && (
-                      <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-purple-400 rounded-full"></div>
-                    )}
                   </button>
                 );
               })}
             </div>
           </div>
         ))}
-      </div>
-
-      {/* Action Buttons */}
-      <div className="flex items-center gap-3">
-        {actionTools.map((tool) => {
-          const IconComponent = tool.icon;
-          return (
-            <button
-              key={tool.id}
-              onClick={tool.onClick}
-              disabled={tool.disabled}
-              className={getActionButtonClasses(tool)}
-              title={tool.label}
-            >
-              <IconComponent size={16} />
-              <span className="hidden sm:inline">{tool.label}</span>
-            </button>
-          );
-        })}
       </div>
 
       {/* Canvas Info - Mobile */}

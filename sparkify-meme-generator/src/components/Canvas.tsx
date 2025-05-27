@@ -29,6 +29,14 @@ const Canvas: React.FC<CanvasProps> = ({
   const [backgroundImage, setBackgroundImage] =
     useState<HTMLImageElement | null>(null);
   const [sparkyImage, setSparkyImage] = useState<HTMLImageElement | null>(null);
+  const [zoom, setZoom] = useState<number>(100);
+  const [sparkyPosition, setSparkyPosition] = useState<{
+    x: number;
+    y: number;
+  }>({
+    x: 0,
+    y: 0,
+  });
   const [textElements, setTextElements] = useState<
     Array<{
       id: string;
@@ -42,7 +50,6 @@ const Canvas: React.FC<CanvasProps> = ({
     }>
   >([]);
 
-  // Load background image when template is selected
   useEffect(() => {
     if (selectedTemplate) {
       const img = new window.Image();
@@ -54,28 +61,25 @@ const Canvas: React.FC<CanvasProps> = ({
     }
   }, [selectedTemplate]);
 
-  // Load sparky image when character is selected
   useEffect(() => {
     if (selectedCharacter) {
       const img = new window.Image();
       img.crossOrigin = "anonymous";
       img.onload = () => {
         setSparkyImage(img);
+        setSparkyPosition({
+          x: canvasState.width / 2 - 75,
+          y: canvasState.height / 2 - 75,
+        });
       };
       img.src = selectedCharacter.imageUrl;
     }
-  }, [selectedCharacter]);
+  }, [selectedCharacter, canvasState.width, canvasState.height]);
 
-  // Handle selection
   const handleSelect = (id: string) => {
     setSelectedId(id);
   };
 
-  const handleDeselect = () => {
-    setSelectedId(null);
-  };
-
-  // Handle stage click
   const handleStageClick = (e: any) => {
     const clickedOnEmpty = e.target === e.target.getStage();
     if (clickedOnEmpty) {
@@ -83,14 +87,13 @@ const Canvas: React.FC<CanvasProps> = ({
     }
   };
 
-  // Add text element
   const addText = () => {
     const newText = {
       id: `text-${Date.now()}`,
       text: "Double click to edit",
-      x: canvasState.width / 2 - 100,
+      x: canvasState.width / 2 - 80,
       y: canvasState.height / 2,
-      fontSize: 32,
+      fontSize: 28,
       fill: "#ffffff",
       stroke: "#000000",
       strokeWidth: 2,
@@ -99,7 +102,6 @@ const Canvas: React.FC<CanvasProps> = ({
     setSelectedId(newText.id);
   };
 
-  // Update text
   const updateText = (id: string, newText: string) => {
     setTextElements(
       textElements.map((text) =>
@@ -108,11 +110,11 @@ const Canvas: React.FC<CanvasProps> = ({
     );
   };
 
-  // Delete selected element
   const deleteSelected = () => {
     if (selectedId) {
       if (selectedId === "sparky") {
         setSparkyImage(null);
+        setSparkyPosition({ x: 0, y: 0 });
       } else if (selectedId.startsWith("text-")) {
         setTextElements(textElements.filter((text) => text.id !== selectedId));
       }
@@ -120,7 +122,6 @@ const Canvas: React.FC<CanvasProps> = ({
     }
   };
 
-  // Download canvas as image
   const downloadImage = () => {
     if (stageRef.current) {
       const uri = stageRef.current.toDataURL();
@@ -133,15 +134,14 @@ const Canvas: React.FC<CanvasProps> = ({
     }
   };
 
-  // Clear canvas
   const clearCanvas = () => {
     setBackgroundImage(null);
     setSparkyImage(null);
     setTextElements([]);
     setSelectedId(null);
+    setSparkyPosition({ x: 0, y: 0 });
   };
 
-  // Update transformer when selection changes
   useEffect(() => {
     if (transformerRef.current) {
       const stage = stageRef.current;
@@ -158,13 +158,17 @@ const Canvas: React.FC<CanvasProps> = ({
     }
   }, [selectedId]);
 
+  const handleZoomChange = (newZoom: number) => {
+    setZoom(newZoom);
+  };
+
   return (
-    <div className="flex flex-col items-center space-y-6">
+    <div className="flex flex-col items-center space-y-6 p-8">
       {/* Controls */}
-      <div className="flex flex-wrap items-center justify-center gap-3 p-4 glass-dark rounded-xl border border-white/10">
+      <div className="flex items-center gap-2 p-3 bg-white/5 backdrop-blur-sm rounded-lg border border-white/10">
         <button
           onClick={addText}
-          className="btn-primary text-sm flex items-center space-x-2"
+          className="flex items-center gap-2 px-3 py-2 bg-blue-500/20 hover:bg-blue-500/30 text-blue-200 rounded-md transition-colors text-sm font-medium"
         >
           <svg
             className="w-4 h-4"
@@ -176,16 +180,16 @@ const Canvas: React.FC<CanvasProps> = ({
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth={2}
-              d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+              d="M12 4v16m8-8H4"
             />
           </svg>
-          <span>Add Text</span>
+          Text
         </button>
 
         <button
           onClick={deleteSelected}
           disabled={!selectedId}
-          className="btn-danger text-sm flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex items-center gap-2 px-3 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-200 rounded-md transition-colors text-sm font-medium disabled:opacity-40 disabled:cursor-not-allowed"
         >
           <svg
             className="w-4 h-4"
@@ -197,15 +201,17 @@ const Canvas: React.FC<CanvasProps> = ({
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth={2}
-              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+              d="M6 18L18 6M6 6l12 12"
             />
           </svg>
-          <span>Delete</span>
+          Delete
         </button>
+
+        <div className="w-px h-6 bg-white/20"></div>
 
         <button
           onClick={downloadImage}
-          className="btn-success text-sm flex items-center space-x-2"
+          className="flex items-center gap-2 px-3 py-2 bg-green-500/20 hover:bg-green-500/30 text-green-200 rounded-md transition-colors text-sm font-medium"
         >
           <svg
             className="w-4 h-4"
@@ -217,15 +223,15 @@ const Canvas: React.FC<CanvasProps> = ({
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth={2}
-              d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
             />
           </svg>
-          <span>Download</span>
+          Save
         </button>
 
         <button
           onClick={clearCanvas}
-          className="btn-secondary text-sm flex items-center space-x-2"
+          className="flex items-center gap-2 px-3 py-2 bg-gray-500/20 hover:bg-gray-500/30 text-gray-200 rounded-md transition-colors text-sm font-medium"
         >
           <svg
             className="w-4 h-4"
@@ -240,141 +246,201 @@ const Canvas: React.FC<CanvasProps> = ({
               d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
             />
           </svg>
-          <span>Clear All</span>
+          Clear
         </button>
+
+        <div className="w-px h-6 bg-white/20"></div>
+
+        {/* Zoom Controls */}
+        <div className="flex items-center gap-3 px-3 py-2">
+          <svg
+            className="w-4 h-4 text-gray-300"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM13 10h-3m-3 0h3m0 0V7m0 3v3"
+            />
+          </svg>
+
+          <input
+            type="range"
+            min="25"
+            max="200"
+            value={zoom}
+            onChange={(e) => handleZoomChange(Number(e.target.value))}
+            className="w-20 h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer slider"
+            style={{
+              background: `linear-gradient(to right, #8b5cf6 0%, #8b5cf6 ${((zoom - 25) / (200 - 25)) * 100}%, #4b5563 ${((zoom - 25) / (200 - 25)) * 100}%, #4b5563 100%)`,
+            }}
+          />
+
+          <span className="text-xs text-gray-300 font-medium min-w-[3rem] text-center">
+            {zoom}%
+          </span>
+        </div>
       </div>
 
       {/* Canvas */}
       <div className="canvas-container border border-white/20 bg-dark-800 relative shadow-dark rounded-xl overflow-hidden">
-        <Stage
-          ref={stageRef}
-          width={canvasState.width}
-          height={canvasState.height}
-          onClick={handleStageClick}
-          onTap={handleStageClick}
+        <div
+          className="canvas-wrapper overflow-auto"
+          style={{
+            width: canvasState.width * (zoom / 100),
+            height: canvasState.height * (zoom / 100),
+            maxWidth: "100%",
+            maxHeight: "70vh",
+          }}
         >
-          <Layer>
-            {/* Background Image */}
-            {backgroundImage && (
-              <Image
-                image={backgroundImage}
-                width={canvasState.width}
-                height={canvasState.height}
-                listening={false}
-              />
-            )}
+          <Stage
+            ref={stageRef}
+            width={canvasState.width * (zoom / 100)}
+            height={canvasState.height * (zoom / 100)}
+            onClick={handleStageClick}
+            onTap={handleStageClick}
+          >
+            <Layer>
+              {/* Background Image */}
+              {backgroundImage && (
+                <Image
+                  image={backgroundImage}
+                  width={canvasState.width * (zoom / 100)}
+                  height={canvasState.height * (zoom / 100)}
+                  listening={false}
+                />
+              )}
 
-            {/* Sparky Character */}
-            {sparkyImage && (
-              <Image
-                id="sparky"
-                image={sparkyImage}
-                x={canvasState.width / 2 - 100}
-                y={canvasState.height / 2 - 100}
-                width={200}
-                height={200}
-                draggable
-                onClick={() => handleSelect("sparky")}
-                onTap={() => handleSelect("sparky")}
-              />
-            )}
+              {/* Sparky Character */}
+              {sparkyImage && (
+                <Image
+                  id="sparky"
+                  image={sparkyImage}
+                  x={sparkyPosition.x * (zoom / 100)}
+                  y={sparkyPosition.y * (zoom / 100)}
+                  width={150 * (zoom / 100)}
+                  height={150 * (zoom / 100)}
+                  draggable
+                  onClick={() => handleSelect("sparky")}
+                  onTap={() => handleSelect("sparky")}
+                  onDragEnd={(e) => {
+                    const newX = e.target.x() / (zoom / 100);
+                    const newY = e.target.y() / (zoom / 100);
+                    setSparkyPosition({ x: newX, y: newY });
+                  }}
+                />
+              )}
 
-            {/* Text Elements */}
-            {textElements.map((textEl) => (
-              <Text
-                key={textEl.id}
-                id={textEl.id}
-                text={textEl.text}
-                x={textEl.x}
-                y={textEl.y}
-                fontSize={textEl.fontSize}
-                fill={textEl.fill}
-                stroke={textEl.stroke}
-                strokeWidth={textEl.strokeWidth}
-                fontFamily="Impact"
-                fontStyle="bold"
-                align="center"
-                draggable
-                onClick={() => handleSelect(textEl.id)}
-                onTap={() => handleSelect(textEl.id)}
-                onDblClick={(e) => {
-                  const textNode = e.target as any;
-                  textNode.hide();
+              {/* Text Elements */}
+              {textElements.map((textEl) => (
+                <Text
+                  key={textEl.id}
+                  id={textEl.id}
+                  text={textEl.text}
+                  x={textEl.x * (zoom / 100)}
+                  y={textEl.y * (zoom / 100)}
+                  fontSize={textEl.fontSize * (zoom / 100)}
+                  fill={textEl.fill}
+                  stroke={textEl.stroke}
+                  strokeWidth={textEl.strokeWidth * (zoom / 100)}
+                  fontFamily="Impact"
+                  fontStyle="bold"
+                  align="center"
+                  draggable
+                  onClick={() => handleSelect(textEl.id)}
+                  onTap={() => handleSelect(textEl.id)}
+                  onDragEnd={(e) => {
+                    const newX = e.target.x() / (zoom / 100);
+                    const newY = e.target.y() / (zoom / 100);
+                    setTextElements(
+                      textElements.map((text) =>
+                        text.id === textEl.id
+                          ? { ...text, x: newX, y: newY }
+                          : text
+                      )
+                    );
+                  }}
+                  onDblClick={(e) => {
+                    const textNode = e.target as any;
+                    textNode.hide();
 
-                  const textarea = document.createElement("textarea");
-                  document.body.appendChild(textarea);
+                    const textarea = document.createElement("textarea");
+                    document.body.appendChild(textarea);
 
-                  const stage = textNode.getStage();
-                  const stageBox = stage?.container().getBoundingClientRect();
-                  const areaPosition = {
-                    x: (stageBox?.left || 0) + textNode.x(),
-                    y: (stageBox?.top || 0) + textNode.y(),
-                  };
+                    const stage = textNode.getStage();
+                    const stageBox = stage?.container().getBoundingClientRect();
+                    const areaPosition = {
+                      x: (stageBox?.left || 0) + textNode.x(),
+                      y: (stageBox?.top || 0) + textNode.y(),
+                    };
 
-                  textarea.value = textNode.text();
-                  textarea.style.position = "absolute";
-                  textarea.style.top = areaPosition.y + "px";
-                  textarea.style.left = areaPosition.x + "px";
-                  textarea.style.width = textNode.width() + "px";
-                  textarea.style.height = textNode.height() + "px";
-                  textarea.style.fontSize = textNode.fontSize() + "px";
-                  textarea.style.border = "none";
-                  textarea.style.padding = "0px";
-                  textarea.style.margin = "0px";
-                  textarea.style.overflow = "hidden";
-                  textarea.style.background = "none";
-                  textarea.style.outline = "none";
-                  textarea.style.resize = "none";
-                  textarea.style.lineHeight = "1";
-                  textarea.style.fontFamily = "Impact";
-                  textarea.style.transformOrigin = "left top";
-                  textarea.style.textAlign = "center";
-                  textarea.style.color = textEl.fill;
+                    textarea.value = textNode.text();
+                    textarea.style.position = "absolute";
+                    textarea.style.top = areaPosition.y + "px";
+                    textarea.style.left = areaPosition.x + "px";
+                    textarea.style.width = textNode.width() + "px";
+                    textarea.style.height = textNode.height() + "px";
+                    textarea.style.fontSize = textNode.fontSize() + "px";
+                    textarea.style.border = "none";
+                    textarea.style.padding = "0px";
+                    textarea.style.margin = "0px";
+                    textarea.style.overflow = "hidden";
+                    textarea.style.background = "none";
+                    textarea.style.outline = "none";
+                    textarea.style.resize = "none";
+                    textarea.style.lineHeight = "1";
+                    textarea.style.fontFamily = "Impact";
+                    textarea.style.transformOrigin = "left top";
+                    textarea.style.textAlign = "center";
+                    textarea.style.color = textEl.fill;
 
-                  textarea.focus();
+                    textarea.focus();
 
-                  const removeTextarea = () => {
-                    textarea.parentNode?.removeChild(textarea);
-                    textNode.show();
-                    updateText(textEl.id, textarea.value);
-                  };
+                    const removeTextarea = () => {
+                      textarea.parentNode?.removeChild(textarea);
+                      textNode.show();
+                      updateText(textEl.id, textarea.value);
+                    };
 
-                  textarea.addEventListener("keydown", (e) => {
-                    if (e.key === "Enter" && !e.shiftKey) {
-                      removeTextarea();
-                    }
-                    if (e.key === "Escape") {
-                      removeTextarea();
-                    }
-                  });
+                    textarea.addEventListener("keydown", (e) => {
+                      if (e.key === "Enter" && !e.shiftKey) {
+                        removeTextarea();
+                      }
+                      if (e.key === "Escape") {
+                        removeTextarea();
+                      }
+                    });
 
-                  textarea.addEventListener("blur", removeTextarea);
+                    textarea.addEventListener("blur", removeTextarea);
+                  }}
+                />
+              ))}
+
+              {/* Transformer */}
+              <Transformer
+                ref={transformerRef}
+                boundBoxFunc={(oldBox, newBox) => {
+                  if (newBox.width < 5 || newBox.height < 5) {
+                    return oldBox;
+                  }
+                  return newBox;
                 }}
               />
-            ))}
-
-            {/* Transformer */}
-            <Transformer
-              ref={transformerRef}
-              boundBoxFunc={(oldBox, newBox) => {
-                // Limit resize
-                if (newBox.width < 5 || newBox.height < 5) {
-                  return oldBox;
-                }
-                return newBox;
-              }}
-            />
-          </Layer>
-        </Stage>
+            </Layer>
+          </Stage>
+        </div>
 
         {/* Empty Canvas Placeholder */}
         {!backgroundImage && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-dark-800 to-dark-900 border-2 border-dashed border-purple-500/30 rounded-xl">
-            <div className="text-center p-8 max-w-sm animate-fade-in">
+            <div className="text-center p-6 max-w-md animate-fade-in">
               {/* Icon */}
-              <div className="mx-auto w-20 h-20 mb-6 bg-purple-gradient rounded-full flex items-center justify-center animate-pulse-glow">
+              <div className="mx-auto w-16 h-16 mb-4 bg-purple-gradient rounded-full flex items-center justify-center animate-pulse-glow">
                 <svg
-                  className="w-10 h-10 text-white"
+                  className="w-8 h-8 text-white"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -390,12 +456,12 @@ const Canvas: React.FC<CanvasProps> = ({
               </div>
 
               {/* Main message */}
-              <h3 className="text-xl font-bold gradient-text mb-3">
+              <h3 className="text-lg font-bold gradient-text mb-2">
                 Choose a Background to Start
               </h3>
 
               {/* Supporting text */}
-              <p className="text-sm text-gray-400 mb-6 leading-relaxed">
+              <p className="text-sm text-gray-400 mb-4 leading-relaxed">
                 Select a meme template from the sidebar to begin creating your
                 masterpiece. Add text, characters, and make it uniquely yours!
               </p>
@@ -423,71 +489,10 @@ const Canvas: React.FC<CanvasProps> = ({
 
         {/* Selection Indicator */}
         {selectedId && (
-          <div className="absolute top-4 right-4 glass rounded-lg px-3 py-2 border border-purple-500/50">
-            <div className="flex items-center space-x-2">
-              <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
-              <span className="text-xs text-purple-200 font-medium">
-                {selectedId === "sparky"
-                  ? "Character Selected"
-                  : "Text Selected"}
-              </span>
-            </div>
+          <div className="absolute top-3 right-3 px-2 py-1 bg-black/50 backdrop-blur-sm rounded text-xs text-white border border-white/20">
+            {selectedId === "sparky" ? "Character" : "Text"}
           </div>
         )}
-      </div>
-
-      {/* Info Panel */}
-      <div className="glass-dark rounded-xl p-4 border border-white/10 w-full max-w-2xl">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-          <div className="flex items-center space-x-4 text-sm text-gray-400">
-            <div className="flex items-center space-x-2">
-              <svg
-                className="w-4 h-4 text-purple-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"
-                />
-              </svg>
-              <span>
-                Canvas: {canvasState.width} × {canvasState.height}px
-              </span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <svg
-                className="w-4 h-4 text-purple-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"
-                />
-              </svg>
-              <span>Selected: {selectedId || "None"}</span>
-            </div>
-          </div>
-
-          <div className="text-xs text-gray-500 text-center sm:text-right">
-            <p className="mb-1">
-              <span className="text-purple-400">Click</span> to select •{" "}
-              <span className="text-purple-400">Drag</span> to move •{" "}
-              <span className="text-purple-400">Double-click</span> text to edit
-            </p>
-            <p>
-              Use handles to resize/rotate •{" "}
-              <span className="text-purple-400">Escape</span> to deselect
-            </p>
-          </div>
-        </div>
       </div>
     </div>
   );

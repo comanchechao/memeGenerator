@@ -24,7 +24,6 @@ const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Filter items based on search
   const filteredBackgrounds = backgroundTemplates.filter((bg) =>
     bg.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -93,7 +92,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       <div className="sidebar-panel">
         <div className="relative">
           <Search
-            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
             size={18}
           />
           <input
@@ -101,13 +100,13 @@ const Sidebar: React.FC<SidebarProps> = ({
             placeholder="Search templates, characters..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="input-dark w-full pl-10 pr-4 py-3 text-sm"
+            className="input-dark w-full placeholder:pr-5 pr-10 pl-4 py-3 text-sm"
           />
         </div>
       </div>
 
       {/* Backgrounds Section */}
-      <div className="sidebar-panel animate-slide-up">
+      <div className="  animate-slide-up">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-sm font-semibold text-gray-200 flex items-center">
             <Image className="w-4 h-4 mr-2 text-purple-400" />
@@ -132,10 +131,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       </div>
 
       {/* Memes Section */}
-      <div
-        className="sidebar-panel animate-slide-up"
-        style={{ animationDelay: "0.1s" }}
-      >
+      <div className="  animate-slide-up" style={{ animationDelay: "0.1s" }}>
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-sm font-semibold text-gray-200 flex items-center">
             <Smile className="w-4 h-4 mr-2 text-purple-400" />
@@ -160,10 +156,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       </div>
 
       {/* Sparky Section */}
-      <div
-        className="sidebar-panel animate-slide-up"
-        style={{ animationDelay: "0.2s" }}
-      >
+      <div className="  animate-slide-up" style={{ animationDelay: "0.2s" }}>
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-sm font-semibold text-gray-200 flex items-center">
             <Zap className="w-4 h-4 mr-2 text-purple-400" />
@@ -184,116 +177,6 @@ const Sidebar: React.FC<SidebarProps> = ({
               <p className="text-sm text-gray-400">No characters found</p>
             </div>
           )}
-        </div>
-      </div>
-
-      {/* Selection Summary */}
-      {(selectedTemplate || selectedCharacter) && (
-        <div className="sidebar-panel animate-fade-in">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-semibold text-gray-200 flex items-center">
-              <svg
-                className="w-4 h-4 mr-2 text-purple-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              Current Selection
-            </h3>
-            <button
-              onClick={() => {
-                if (selectedTemplate) onTemplateSelect(null as any);
-                if (selectedCharacter) onCharacterSelect(null as any);
-              }}
-              className="text-xs text-gray-400 hover:text-red-400 transition-colors"
-            >
-              Clear
-            </button>
-          </div>
-          <div className="space-y-3">
-            {selectedTemplate && (
-              <div className="glass rounded-lg p-3 border border-purple-500/30 bg-purple-500/10">
-                <div className="flex items-center gap-3">
-                  <img
-                    src={selectedTemplate.thumbnail}
-                    alt={selectedTemplate.name}
-                    className="w-12 h-12 object-cover rounded-lg"
-                  />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-purple-200 truncate">
-                      {selectedTemplate.name}
-                    </p>
-                    <p className="text-xs text-purple-300">
-                      {selectedTemplate.width}×{selectedTemplate.height}px
-                    </p>
-                  </div>
-                  <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
-                </div>
-              </div>
-            )}
-            {selectedCharacter && (
-              <div className="glass rounded-lg p-3 border border-purple-500/30 bg-purple-500/10">
-                <div className="flex items-center gap-3">
-                  <img
-                    src={selectedCharacter.thumbnail}
-                    alt={selectedCharacter.name}
-                    className="w-12 h-12 object-cover rounded-full"
-                  />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-purple-200 truncate">
-                      {selectedCharacter.name}
-                    </p>
-                    <p className="text-xs text-purple-300">Character</p>
-                  </div>
-                  <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* Quick Tips */}
-      <div
-        className="sidebar-panel animate-slide-up"
-        style={{ animationDelay: "0.3s" }}
-      >
-        <div className="flex items-center mb-3">
-          <svg
-            className="w-4 h-4 mr-2 text-purple-400"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
-          <h3 className="text-sm font-semibold text-gray-200">Quick Tips</h3>
-        </div>
-        <div className="space-y-2 text-xs text-gray-400">
-          <div className="flex items-start space-x-2">
-            <div className="w-1.5 h-1.5 bg-purple-400 rounded-full mt-1.5 flex-shrink-0"></div>
-            <p>Click any template to set as background</p>
-          </div>
-          <div className="flex items-start space-x-2">
-            <div className="w-1.5 h-1.5 bg-purple-400 rounded-full mt-1.5 flex-shrink-0"></div>
-            <p>Add Sparky characters for extra fun</p>
-          </div>
-          <div className="flex items-start space-x-2">
-            <div className="w-1.5 h-1.5 bg-purple-400 rounded-full mt-1.5 flex-shrink-0"></div>
-            <p>Use search to find specific templates</p>
-          </div>
         </div>
       </div>
     </div>
