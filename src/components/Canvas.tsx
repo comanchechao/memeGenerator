@@ -18,8 +18,6 @@ interface CanvasProps {
 
 const Canvas: React.FC<CanvasProps> = ({
   canvasState,
-  onCanvasStateChange,
-  currentMode,
   selectedTemplate,
   selectedCharacter,
 }) => {

@@ -2,15 +2,11 @@ import React from "react";
 import {
   Undo2,
   Redo2,
-  ZoomIn,
-  ZoomOut,
   Type,
   AlignCenter,
   AlignLeft,
   AlignRight,
   RotateCcw,
-  Download,
-  Trash2,
   MousePointer,
   Image,
   Move,
@@ -43,15 +39,11 @@ const Toolbar: React.FC<ToolbarProps> = ({
   canvasState,
   onUndo,
   onRedo,
-  onZoomIn,
-  onZoomOut,
+
   onAddText,
   onAlignLeft,
   onAlignCenter,
   onAlignRight,
-  onReset,
-  onDownload,
-  onDelete,
   canUndo = false,
   canRedo = false,
 }) => {
@@ -172,34 +164,6 @@ const Toolbar: React.FC<ToolbarProps> = ({
     return classes;
   };
 
-  const getActionButtonClasses = (tool: any) => {
-    let classes =
-      "flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ";
-
-    if (tool.disabled) {
-      classes += "opacity-50 cursor-not-allowed ";
-    }
-
-    switch (tool.variant) {
-      case "warning":
-        classes +=
-          "bg-warning-600 hover:bg-warning-700 text-white shadow-lg hover:shadow-xl transform hover:scale-105 ";
-        break;
-      case "success":
-        classes +=
-          "bg-success-600 hover:bg-success-700 text-white shadow-lg hover:shadow-xl transform hover:scale-105 ";
-        break;
-      case "danger":
-        classes +=
-          "bg-error-600 hover:bg-error-700 text-white shadow-lg hover:shadow-xl transform hover:scale-105 ";
-        break;
-      default:
-        classes += "bg-gray-600 hover:bg-gray-700 text-white ";
-    }
-
-    return classes;
-  };
-
   return (
     <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
       {/* Tool Sections */}
@@ -223,7 +187,6 @@ const Toolbar: React.FC<ToolbarProps> = ({
                   <button
                     key={tool.id}
                     onClick={tool.onClick}
-                    disabled={tool.disabled}
                     className={getButtonClasses(tool)}
                     title={tool.label}
                   >

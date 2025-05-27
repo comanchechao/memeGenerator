@@ -1,6 +1,5 @@
-import { CanvasState, TextElement, ImageElement } from "../types";
+import { TextElement, ImageElement } from "../types";
 
-// Simple utility functions for canvas operations
 export const downloadCanvasAsDataURL = (
   dataURL: string,
   filename: string = "meme"

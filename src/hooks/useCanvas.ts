@@ -1,5 +1,4 @@
 import { useState, useCallback } from "react";
-import * as fabric from "fabric";
 import { CanvasState, HistoryState } from "../types";
 
 export const useCanvas = (initialState: CanvasState) => {
@@ -14,7 +13,6 @@ export const useCanvas = (initialState: CanvasState) => {
   const updateCanvasState = useCallback((newState: CanvasState) => {
     setCanvasState(newState);
 
-    // Add to history for undo/redo functionality
     setHistory((prev) => {
       const newStates = prev.states.slice(0, prev.currentIndex + 1);
       newStates.push(newState);
