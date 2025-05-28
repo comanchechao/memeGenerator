@@ -35,9 +35,8 @@ body {
 }
 
 .glass-dark {
-  background: #0e1524;
+  background: linear-gradient(to top right, #0e1524 0%, #010d27 100%);
   backdrop-filter: blur(16px);
-  border: 0.5px solid rgba(255, 255, 255, 0.068);
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
 }
 
@@ -319,7 +318,7 @@ body {
 
 /* Canvas specific styles */
 .canvas-container {
-  @apply relative my-10 overflow-hidden rounded-xl;
+  @apply relative my-10 overflow-hidden rounded-xl w-fit flex justify-center items-center mx-auto;
 }
 
 .canvas-overlay {
@@ -390,4 +389,9 @@ button:disabled {
 /* Konva canvas styling */
 .konvajs-content {
   @apply rounded-lg overflow-hidden shadow-dark;
+}
+
+/* Loading animation delay */
+.animation-delay-150 {
+  animation-delay: 150ms;
 }

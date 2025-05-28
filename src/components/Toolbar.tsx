@@ -11,6 +11,10 @@ import {
   Image,
   Move,
   Layers,
+  Download,
+  Trash2,
+  RefreshCw,
+  Loader,
 } from "lucide-react";
 import { CanvasState, CanvasMode } from "../types";
 
@@ -31,6 +35,7 @@ interface ToolbarProps {
   onDelete?: () => void;
   canUndo?: boolean;
   canRedo?: boolean;
+  isImageLoading?: boolean;
 }
 
 const Toolbar: React.FC<ToolbarProps> = ({
@@ -39,35 +44,18 @@ const Toolbar: React.FC<ToolbarProps> = ({
   canvasState,
   onUndo,
   onRedo,
-
   onAddText,
   onAlignLeft,
   onAlignCenter,
   onAlignRight,
+  onReset,
+  onDownload,
+  onDelete,
   canUndo = false,
   canRedo = false,
+  isImageLoading = false,
 }) => {
   const toolbarSections = [
-    {
-      title: "Selection",
-      icon: MousePointer,
-      tools: [
-        {
-          id: "select",
-          icon: MousePointer,
-          label: "Select",
-          onClick: () => onModeChange("select"),
-          isActive: currentMode === "select",
-        },
-        {
-          id: "move",
-          icon: Move,
-          label: "Move",
-          onClick: () => onModeChange("select"),
-          isActive: false,
-        },
-      ],
-    },
     {
       title: "History",
       icon: RotateCcw,
@@ -78,6 +66,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
           label: "Undo",
           onClick: onUndo,
           disabled: !canUndo,
+          isLoading: false,
         },
         {
           id: "redo",
@@ -85,10 +74,10 @@ const Toolbar: React.FC<ToolbarProps> = ({
           label: "Redo",
           onClick: onRedo,
           disabled: !canRedo,
+          isLoading: false,
         },
       ],
     },
-
     {
       title: "Add Content",
       icon: Layers,
@@ -99,13 +88,17 @@ const Toolbar: React.FC<ToolbarProps> = ({
           label: "Add Text",
           onClick: onAddText,
           isActive: currentMode === "text",
+          disabled: false,
+          isLoading: false,
         },
         {
           id: "add-image",
-          icon: Image,
-          label: "Add Image",
+          icon: isImageLoading ? Loader : Image,
+          label: isImageLoading ? "Loading..." : "Add Image",
           onClick: () => onModeChange("image"),
           isActive: currentMode === "image",
+          disabled: isImageLoading,
+          isLoading: isImageLoading,
         },
       ],
     },
@@ -118,18 +111,57 @@ const Toolbar: React.FC<ToolbarProps> = ({
           icon: AlignLeft,
           label: "Align Left",
           onClick: onAlignLeft,
+          disabled: false,
+          isLoading: false,
         },
         {
           id: "align-center",
           icon: AlignCenter,
           label: "Align Center",
           onClick: onAlignCenter,
+          disabled: false,
+          isLoading: false,
         },
         {
           id: "align-right",
           icon: AlignRight,
           label: "Align Right",
           onClick: onAlignRight,
+          disabled: false,
+          isLoading: false,
+        },
+      ],
+    },
+    {
+      title: "Actions",
+      icon: Download,
+      tools: [
+        {
+          id: "delete",
+          icon: Trash2,
+          label: "Delete",
+          onClick: onDelete,
+          variant: "danger",
+          disabled: false,
+          isLoading: false,
+        },
+        {
+          id: "download",
+          icon: Download,
+          label: "Download",
+          onClick: onDownload,
+          variant: "success",
+          disabled: false,
+          isLoading: false,
+        },
+        {
+          id: "reset",
+          icon: RefreshCw,
+          label: "Reset",
+          onClick: onReset,
+          variant: "warning",
+          disabled: false,
+          isLoading: false,
         },
       ],
     },
@@ -188,8 +220,12 @@ const Toolbar: React.FC<ToolbarProps> = ({
                     onClick={tool.onClick}
                     className={getButtonClasses(tool)}
                     title={tool.label}
+                    disabled={tool.disabled}
                   >
-                    <IconComponent size={16} />
+                    <IconComponent
+                      size={16}
+                      className={tool.isLoading ? "animate-spin" : ""}
+                    />
                     <span className="hidden sm:inline">{tool.label}</span>
                   </button>
                 );

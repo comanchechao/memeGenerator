@@ -14,29 +14,27 @@ interface CanvasProps {
   currentMode: CanvasMode;
   selectedTemplate: MemeTemplate | null;
   selectedCharacter: SparkyCharacter | null;
-}
-
-const Canvas: React.FC<CanvasProps> = ({
-  canvasState,
-  selectedTemplate,
-  selectedCharacter,
-}) => {
-  const stageRef = useRef<Konva.Stage>(null);
-  const transformerRef = useRef<Konva.Transformer>(null);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [backgroundImage, setBackgroundImage] =
-    useState<HTMLImageElement | null>(null);
-  const [sparkyImage, setSparkyImage] = useState<HTMLImageElement | null>(null);
-  const [zoom, setZoom] = useState<number>(100);
-  const [sparkyPosition, setSparkyPosition] = useState<{
+  stageRef: React.RefObject<Konva.Stage>;
+  selectedId: string | null;
+  setSelectedId: (id: string | null) => void;
+  backgroundImage: HTMLImageElement | null;
+  sparkyImage: HTMLImageElement | null;
+  zoom: number;
+  setZoom: (zoom: number) => void;
+  sparkyPosition: { x: number; y: number };
+  setSparkyPosition: (position: { x: number; y: number }) => void;
+  textElements: Array<{
+    id: string;
+    text: string;
     x: number;
     y: number;
-  }>({
-    x: 0,
-    y: 0,
-  });
-  const [textElements, setTextElements] = useState<
-    Array<{
+    fontSize: number;
+    fill: string;
+    stroke: string;
+    strokeWidth: number;
+  }>;
+  setTextElements: (
+    elements: Array<{
       id: string;
       text: string;
       x: number;
@@ -46,33 +44,64 @@ const Canvas: React.FC<CanvasProps> = ({
       stroke: string;
       strokeWidth: number;
     }>
-  >([]);
+  ) => void;
+  uploadedImages: Array<{
+    id: string;
+    image: HTMLImageElement;
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  }>;
+  setUploadedImages: (
+    images: Array<{
+      id: string;
+      image: HTMLImageElement;
+      x: number;
+      y: number;
+      width: number;
+      height: number;
+    }>
+  ) => void;
+  isImageLoading: boolean;
+  addText: () => void;
+  deleteSelected: () => void;
+  downloadImage: () => void;
+  clearCanvas: () => void;
+}
 
-  useEffect(() => {
-    if (selectedTemplate) {
-      const img = new window.Image();
-      img.crossOrigin = "anonymous";
-      img.onload = () => {
-        setBackgroundImage(img);
-      };
-      img.src = selectedTemplate.imageUrl;
-    }
-  }, [selectedTemplate]);
+const Canvas: React.FC<CanvasProps> = ({
+  canvasState,
+  selectedTemplate,
+  selectedCharacter,
+  stageRef,
+  selectedId,
+  setSelectedId,
+  backgroundImage,
+  sparkyImage,
+  zoom,
+  setZoom,
+  sparkyPosition,
+  setSparkyPosition,
+  textElements,
+  setTextElements,
+  uploadedImages,
+  setUploadedImages,
+  isImageLoading,
+  addText,
+  deleteSelected,
+  downloadImage,
+  clearCanvas,
+}) => {
+  const transformerRef = useRef<Konva.Transformer>(null);
 
-  useEffect(() => {
-    if (selectedCharacter) {
-      const img = new window.Image();
-      img.crossOrigin = "anonymous";
-      img.onload = () => {
-        setSparkyImage(img);
-        setSparkyPosition({
-          x: canvasState.width / 2 - 75,
-          y: canvasState.height / 2 - 75,
-        });
-      };
-      img.src = selectedCharacter.imageUrl;
-    }
-  }, [selectedCharacter, canvasState.width, canvasState.height]);
+  const updateText = (id: string, newText: string) => {
+    setTextElements(
+      textElements.map((text) =>
+        text.id === id ? { ...text, text: newText } : text
+      )
+    );
+  };
 
   const handleSelect = (id: string) => {
     setSelectedId(id);
@@ -83,61 +112,6 @@ const Canvas: React.FC<CanvasProps> = ({
     if (clickedOnEmpty) {
       setSelectedId(null);
     }
-  };
-
-  const addText = () => {
-    const newText = {
-      id: `text-${Date.now()}`,
-      text: "Double click to edit",
-      x: canvasState.width / 2 - 80,
-      y: canvasState.height / 2,
-      fontSize: 28,
-      fill: "#ffffff",
-      stroke: "#000000",
-      strokeWidth: 2,
-    };
-    setTextElements([...textElements, newText]);
-    setSelectedId(newText.id);
-  };
-
-  const updateText = (id: string, newText: string) => {
-    setTextElements(
-      textElements.map((text) =>
-        text.id === id ? { ...text, text: newText } : text
-      )
-    );
-  };
-
-  const deleteSelected = () => {
-    if (selectedId) {
-      if (selectedId === "sparky") {
-        setSparkyImage(null);
-        setSparkyPosition({ x: 0, y: 0 });
-      } else if (selectedId.startsWith("text-")) {
-        setTextElements(textElements.filter((text) => text.id !== selectedId));
-      }
-      setSelectedId(null);
-    }
-  };
-
-  const downloadImage = () => {
-    if (stageRef.current) {
-      const uri = stageRef.current.toDataURL();
-      const link = document.createElement("a");
-      link.download = "sparkify-meme.png";
-      link.href = uri;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
-  };
-
-  const clearCanvas = () => {
-    setBackgroundImage(null);
-    setSparkyImage(null);
-    setTextElements([]);
-    setSelectedId(null);
-    setSparkyPosition({ x: 0, y: 0 });
   };
 
   useEffect(() => {
@@ -497,6 +471,32 @@ const Canvas: React.FC<CanvasProps> = ({
                 />
               ))}
 
+              {uploadedImages.map((imageEl) => (
+                <Image
+                  key={imageEl.id}
+                  id={imageEl.id}
+                  image={imageEl.image}
+                  x={imageEl.x * (zoom / 100)}
+                  y={imageEl.y * (zoom / 100)}
+                  width={imageEl.width * (zoom / 100)}
+                  height={imageEl.height * (zoom / 100)}
+                  draggable
+                  onClick={() => handleSelect(imageEl.id)}
+                  onTap={() => handleSelect(imageEl.id)}
+                  onDragEnd={(e) => {
+                    const newX = e.target.x() / (zoom / 100);
+                    const newY = e.target.y() / (zoom / 100);
+                    setUploadedImages(
+                      uploadedImages.map((img) =>
+                        img.id === imageEl.id
+                          ? { ...img, x: newX, y: newY }
+                          : img
+                      )
+                    );
+                  }}
+                />
+              ))}
+
               <Transformer
                 ref={transformerRef}
                 boundBoxFunc={(oldBox, newBox) => {
@@ -566,7 +566,30 @@ const Canvas: React.FC<CanvasProps> = ({
 
         {selectedId && (
           <div className="absolute top-3 right-3 px-2 py-1 bg-black/50 backdrop-blur-sm rounded text-xs text-white border border-white/20">
-            {selectedId === "sparky" ? "Character" : "Text"}
+            {selectedId === "sparky"
+              ? "Character"
+              : selectedId.startsWith("image-")
+                ? "Image"
+                : "Text"}
+          </div>
+        )}
+
+        {isImageLoading && (
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center rounded-xl z-50">
+            <div className="flex flex-col items-center space-y-4">
+              <div className="relative">
+                <div className="w-12 h-12 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin"></div>
+                <div className="absolute inset-0 w-12 h-12 border-4 border-transparent border-t-purple-400 rounded-full animate-spin animation-delay-150"></div>
+              </div>
+              <div className="text-center">
+                <p className="text-white font-medium text-sm">
+                  Processing Image...
+                </p>
+                <p className="text-gray-300 text-xs mt-1">
+                  Please wait while we load your image
+                </p>
+              </div>
+            </div>
           </div>
         )}
       </div>
