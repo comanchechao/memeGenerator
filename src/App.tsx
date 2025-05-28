@@ -29,7 +29,6 @@ function App() {
     elements: [],
   });
 
-  // New state for canvas elements
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [backgroundImage, setBackgroundImage] =
     useState<HTMLImageElement | null>(null);
@@ -334,9 +333,7 @@ function App() {
     }
   };
 
-  // Track state changes and save to history
   useEffect(() => {
-    // Don't save initial state or during undo/redo operations
     if (history.length === 0) return;
 
     const currentState = {
@@ -350,7 +347,6 @@ function App() {
       selectedCharacter,
     };
 
-    // Check if state actually changed
     const lastState = history[historyIndex];
     if (
       lastState &&
@@ -468,8 +464,6 @@ function App() {
                   canvasState={canvasState}
                   onCanvasStateChange={setCanvasState}
                   currentMode={currentMode}
-                  selectedTemplate={selectedTemplate}
-                  selectedCharacter={selectedCharacter}
                   stageRef={stageRef}
                   selectedId={selectedId}
                   setSelectedId={setSelectedId}
@@ -652,8 +646,6 @@ function App() {
                       canvasState={canvasState}
                       onCanvasStateChange={setCanvasState}
                       currentMode={currentMode}
-                      selectedTemplate={selectedTemplate}
-                      selectedCharacter={selectedCharacter}
                       stageRef={stageRef}
                       selectedId={selectedId}
                       setSelectedId={setSelectedId}
