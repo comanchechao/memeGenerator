@@ -371,23 +371,6 @@ function App() {
     selectedCharacter,
   ]);
 
-  const saveState = () => {
-    const state = {
-      textElements: [...textElements],
-      sparkyPosition: { ...sparkyPosition },
-      sparkyImage: sparkyImage,
-      uploadedImages: [...uploadedImages],
-      selectedId,
-      backgroundImage,
-      selectedTemplate,
-      selectedCharacter,
-    };
-    const newHistory = history.slice(0, historyIndex + 1);
-    newHistory.push(state);
-    setHistory(newHistory);
-    setHistoryIndex(newHistory.length - 1);
-  };
-
   const undo = () => {
     if (historyIndex > 0) {
       const prevState = history[historyIndex - 1];

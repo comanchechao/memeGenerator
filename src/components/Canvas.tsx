@@ -1,19 +1,12 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 import { Stage, Layer, Image, Text, Transformer } from "react-konva";
 import Konva from "konva";
-import {
-  CanvasState,
-  CanvasMode,
-  MemeTemplate,
-  SparkyCharacter,
-} from "../types";
+import { CanvasState, CanvasMode } from "../types";
 
 interface CanvasProps {
   canvasState: CanvasState;
   onCanvasStateChange: (state: CanvasState) => void;
   currentMode: CanvasMode;
-  selectedTemplate: MemeTemplate | null;
-  selectedCharacter: SparkyCharacter | null;
   stageRef: React.RefObject<Konva.Stage>;
   selectedId: string | null;
   setSelectedId: (id: string | null) => void;
@@ -72,8 +65,6 @@ interface CanvasProps {
 
 const Canvas: React.FC<CanvasProps> = ({
   canvasState,
-  selectedTemplate,
-  selectedCharacter,
   stageRef,
   selectedId,
   setSelectedId,
@@ -340,17 +331,15 @@ const Canvas: React.FC<CanvasProps> = ({
         </div>
       </div>
 
-      <div className="canvas-container border border-white/20 bg-dark-800 relative shadow-dark rounded-xl overflow-hidden w-full max-w-4xl">
-        <div
-          className="canvas-wrapper overflow-auto touch-pan-x touch-pan-y"
-          style={{
-            width: canvasState.width * (zoom / 100),
-            height: canvasState.height * (zoom / 100),
-            maxWidth: "100%",
-            maxHeight: "60vh",
-            minHeight: "300px",
-          }}
-        >
+      <div
+        className="canvas-container my-20 border border-white/20 bg-dark-800 relative shadow-dark rounded-xl overflow-hidden w-full max-w-4xl"
+        style={{
+          width: canvasState.width * (zoom / 100),
+          height: canvasState.height * (zoom / 100),
+          maxHeight: "60vh",
+        }}
+      >
+        <div className="canvas-wrapper overflow-auto touch-pan-x touch-pan-y">
           <Stage
             ref={stageRef}
             width={canvasState.width * (zoom / 100)}
