@@ -166,7 +166,6 @@ const Toolbar: React.FC<ToolbarProps> = ({
 
   return (
     <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
-      {/* Tool Sections */}
       <div className="flex flex-wrap gap-6">
         {toolbarSections.map((section, sectionIndex) => (
           <div
@@ -200,7 +199,6 @@ const Toolbar: React.FC<ToolbarProps> = ({
         ))}
       </div>
 
-      {/* Canvas Info - Mobile */}
       <div className="lg:hidden w-full glass rounded-lg p-3 border border-white/10">
         <div className="flex justify-between items-center text-xs text-gray-400">
           <div className="flex items-center gap-3">

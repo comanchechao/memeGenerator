@@ -161,98 +161,181 @@ const Canvas: React.FC<CanvasProps> = ({
   };
 
   return (
-    <div className="flex flex-col items-center space-y-6 p-8">
-      {/* Controls */}
-      <div className="flex items-center gap-2 p-3 bg-white/5 backdrop-blur-sm rounded-lg border border-white/10">
-        <button
-          onClick={addText}
-          className="flex items-center gap-2 px-3 py-2 bg-blue-500/20 hover:bg-blue-500/30 text-blue-200 rounded-md transition-colors text-sm font-medium"
-        >
-          <svg
-            className="w-4 h-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+    <div className="flex flex-col items-center space-y-4 lg:space-y-6 p-4 lg:p-8">
+      <div className="flex flex-wrap items-center gap-2 p-3 bg-white/5 backdrop-blur-sm rounded-lg border border-white/10 w-full max-w-4xl">
+        <div className="flex items-center gap-2 lg:hidden">
+          <button
+            onClick={addText}
+            className="flex items-center gap-1 px-3 py-2 bg-blue-500/20 hover:bg-blue-500/30 text-blue-200 rounded-md transition-colors text-sm font-medium touch-manipulation"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 4v16m8-8H4"
-            />
-          </svg>
-          Text
-        </button>
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 4v16m8-8H4"
+              />
+            </svg>
+            <span className="hidden sm:inline">Text</span>
+          </button>
 
-        <button
-          onClick={deleteSelected}
-          disabled={!selectedId}
-          className="flex items-center gap-2 px-3 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-200 rounded-md transition-colors text-sm font-medium disabled:opacity-40 disabled:cursor-not-allowed"
-        >
-          <svg
-            className="w-4 h-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+          <button
+            onClick={deleteSelected}
+            disabled={!selectedId}
+            className="flex items-center gap-1 px-3 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-200 rounded-md transition-colors text-sm font-medium disabled:opacity-40 disabled:cursor-not-allowed touch-manipulation"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-          Delete
-        </button>
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+            <span className="hidden sm:inline">Delete</span>
+          </button>
 
-        <div className="w-px h-6 bg-white/20"></div>
-
-        <button
-          onClick={downloadImage}
-          className="flex items-center gap-2 px-3 py-2 bg-green-500/20 hover:bg-green-500/30 text-green-200 rounded-md transition-colors text-sm font-medium"
-        >
-          <svg
-            className="w-4 h-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+          <button
+            onClick={downloadImage}
+            className="flex items-center gap-1 px-3 py-2 bg-green-500/20 hover:bg-green-500/30 text-green-200 rounded-md transition-colors text-sm font-medium touch-manipulation"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-            />
-          </svg>
-          Save
-        </button>
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+              />
+            </svg>
+            <span className="hidden sm:inline">Save</span>
+          </button>
 
-        <button
-          onClick={clearCanvas}
-          className="flex items-center gap-2 px-3 py-2 bg-gray-500/20 hover:bg-gray-500/30 text-gray-200 rounded-md transition-colors text-sm font-medium"
-        >
-          <svg
-            className="w-4 h-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+          <button
+            onClick={clearCanvas}
+            className="flex items-center gap-1 px-3 py-2 bg-gray-500/20 hover:bg-gray-500/30 text-gray-200 rounded-md transition-colors text-sm font-medium touch-manipulation"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-            />
-          </svg>
-          Clear
-        </button>
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+              />
+            </svg>
+            <span className="hidden sm:inline">Clear</span>
+          </button>
+        </div>
 
-        <div className="w-px h-6 bg-white/20"></div>
+        <div className="hidden lg:flex items-center gap-2">
+          <button
+            onClick={addText}
+            className="flex items-center gap-2 px-3 py-2 bg-blue-500/20 hover:bg-blue-500/30 text-blue-200 rounded-md transition-colors text-sm font-medium"
+          >
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 4v16m8-8H4"
+              />
+            </svg>
+            Text
+          </button>
 
-        {/* Zoom Controls */}
-        <div className="flex items-center gap-3 px-3 py-2">
+          <button
+            onClick={deleteSelected}
+            disabled={!selectedId}
+            className="flex items-center gap-2 px-3 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-200 rounded-md transition-colors text-sm font-medium disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+            Delete
+          </button>
+
+          <div className="w-px h-6 bg-white/20"></div>
+
+          <button
+            onClick={downloadImage}
+            className="flex items-center gap-2 px-3 py-2 bg-green-500/20 hover:bg-green-500/30 text-green-200 rounded-md transition-colors text-sm font-medium"
+          >
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+              />
+            </svg>
+            Save
+          </button>
+
+          <button
+            onClick={clearCanvas}
+            className="flex items-center gap-2 px-3 py-2 bg-gray-500/20 hover:bg-gray-500/30 text-gray-200 rounded-md transition-colors text-sm font-medium"
+          >
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+              />
+            </svg>
+            Clear
+          </button>
+
+          <div className="w-px h-6 bg-white/20"></div>
+        </div>
+
+        <div className="flex items-center gap-2 lg:gap-3 px-2 lg:px-3 py-2 ml-auto">
           <svg
-            className="w-4 h-4 text-gray-300"
+            className="w-3 h-3 lg:w-4 lg:h-4 text-gray-300"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -271,27 +354,27 @@ const Canvas: React.FC<CanvasProps> = ({
             max="200"
             value={zoom}
             onChange={(e) => handleZoomChange(Number(e.target.value))}
-            className="w-20 h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer slider"
+            className="w-16 lg:w-20 h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer slider touch-manipulation"
             style={{
               background: `linear-gradient(to right, #8b5cf6 0%, #8b5cf6 ${((zoom - 25) / (200 - 25)) * 100}%, #4b5563 ${((zoom - 25) / (200 - 25)) * 100}%, #4b5563 100%)`,
             }}
           />
 
-          <span className="text-xs text-gray-300 font-medium min-w-[3rem] text-center">
+          <span className="text-xs text-gray-300 font-medium min-w-[2.5rem] lg:min-w-[3rem] text-center">
             {zoom}%
           </span>
         </div>
       </div>
 
-      {/* Canvas */}
-      <div className="canvas-container border border-white/20 bg-dark-800 relative shadow-dark rounded-xl overflow-hidden">
+      <div className="canvas-container border border-white/20 bg-dark-800 relative shadow-dark rounded-xl overflow-hidden w-full max-w-4xl">
         <div
-          className="canvas-wrapper overflow-auto"
+          className="canvas-wrapper overflow-auto touch-pan-x touch-pan-y"
           style={{
             width: canvasState.width * (zoom / 100),
             height: canvasState.height * (zoom / 100),
             maxWidth: "100%",
-            maxHeight: "70vh",
+            maxHeight: "60vh",
+            minHeight: "300px",
           }}
         >
           <Stage
@@ -302,7 +385,6 @@ const Canvas: React.FC<CanvasProps> = ({
             onTap={handleStageClick}
           >
             <Layer>
-              {/* Background Image */}
               {backgroundImage && (
                 <Image
                   image={backgroundImage}
@@ -312,7 +394,6 @@ const Canvas: React.FC<CanvasProps> = ({
                 />
               )}
 
-              {/* Sparky Character */}
               {sparkyImage && (
                 <Image
                   id="sparky"
@@ -332,7 +413,6 @@ const Canvas: React.FC<CanvasProps> = ({
                 />
               )}
 
-              {/* Text Elements */}
               {textElements.map((textEl) => (
                 <Text
                   key={textEl.id}
@@ -417,7 +497,6 @@ const Canvas: React.FC<CanvasProps> = ({
                 />
               ))}
 
-              {/* Transformer */}
               <Transformer
                 ref={transformerRef}
                 boundBoxFunc={(oldBox, newBox) => {
@@ -431,14 +510,12 @@ const Canvas: React.FC<CanvasProps> = ({
           </Stage>
         </div>
 
-        {/* Empty Canvas Placeholder */}
         {!backgroundImage && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-dark-800 to-dark-900 border-2 border-dashed border-purple-500/30 rounded-xl">
-            <div className="text-center p-6 max-w-md animate-fade-in">
-              {/* Icon */}
-              <div className="mx-auto w-16 h-16 mb-4 bg-purple-gradient rounded-full flex items-center justify-center animate-pulse-glow">
+            <div className="text-center p-4 lg:p-6 max-w-md animate-fade-in">
+              <div className="mx-auto w-12 h-12 lg:w-16 lg:h-16 mb-3 lg:mb-4 bg-purple-gradient rounded-full flex items-center justify-center animate-pulse-glow">
                 <svg
-                  className="w-8 h-8 text-white"
+                  className="w-6 h-6 lg:w-8 lg:h-8 text-white"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -453,21 +530,20 @@ const Canvas: React.FC<CanvasProps> = ({
                 </svg>
               </div>
 
-              {/* Main message */}
-              <h3 className="text-lg font-bold gradient-text mb-2">
+              <h3 className="text-base lg:text-lg font-bold gradient-text mb-2">
                 Choose a Background to Start
               </h3>
 
-              {/* Supporting text */}
-              <p className="text-sm text-gray-400 mb-4 leading-relaxed">
-                Select a meme template from the sidebar to begin creating your
-                masterpiece. Add text, characters, and make it uniquely yours!
+              <p className="text-xs lg:text-sm text-gray-400 mb-3 lg:mb-4 leading-relaxed">
+                Select a meme template <span className="lg:hidden">below</span>
+                <span className="hidden lg:inline">from the sidebar</span> to
+                begin creating your masterpiece. Add text, characters, and make
+                it uniquely yours!
               </p>
 
-              {/* Visual indicator */}
               <div className="flex items-center justify-center text-xs text-purple-400 animate-float">
                 <svg
-                  className="w-4 h-4 mr-2"
+                  className="w-3 h-3 lg:w-4 lg:h-4 mr-2"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -476,16 +552,18 @@ const Canvas: React.FC<CanvasProps> = ({
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth={2}
-                    d="M7 11l5-5m0 0l5 5m-5-5v12"
+                    d="M19 14l-7 7m0 0l-7-7m7 7V3"
                   />
                 </svg>
-                Browse templates on the left
+                <span className="lg:hidden">Browse templates below</span>
+                <span className="hidden lg:inline">
+                  Browse templates on the left
+                </span>
               </div>
             </div>
           </div>
         )}
 
-        {/* Selection Indicator */}
         {selectedId && (
           <div className="absolute top-3 right-3 px-2 py-1 bg-black/50 backdrop-blur-sm rounded text-xs text-white border border-white/20">
             {selectedId === "sparky" ? "Character" : "Text"}

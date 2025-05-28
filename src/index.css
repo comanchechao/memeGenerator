@@ -224,6 +224,97 @@ body {
   .card-dark {
     @apply p-4;
   }
+
+  /* Mobile-specific optimizations */
+  .section-padding {
+    @apply py-4;
+  }
+
+  /* Touch-friendly buttons */
+  .touch-manipulation {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Mobile canvas optimizations */
+  .canvas-container {
+    @apply my-4;
+  }
+
+  .canvas-wrapper {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+
+  /* Mobile toolbar */
+  .toolbar {
+    @apply p-3 flex-wrap;
+  }
+
+  /* Mobile header adjustments */
+  header .container-fluid {
+    @apply px-4;
+  }
+
+  header h1 {
+    @apply text-xl;
+  }
+
+  header p {
+    @apply hidden;
+  }
+
+  /* Mobile badge adjustments */
+  .badge {
+    @apply text-xs px-2 py-1;
+  }
+
+  /* Mobile grid adjustments */
+  .template-item img {
+    @apply h-16;
+  }
+
+  /* Mobile status bar */
+  .glass-dark {
+    @apply text-sm;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 480px) {
+  .section-padding {
+    @apply py-3 px-2;
+  }
+
+  .canvas-container {
+    @apply my-3 mx-2;
+  }
+
+  .toolbar {
+    @apply p-2 gap-1;
+  }
+
+  .template-item {
+    @apply p-1.5;
+  }
+
+  .template-item img {
+    @apply h-14;
+  }
+
+  /* Smaller text on very small screens */
+  .glass-dark {
+    @apply text-xs;
+  }
+
+  /* Compact header */
+  header .flex {
+    @apply h-14;
+  }
+
+  header h1 {
+    @apply text-lg;
+  }
 }
 
 /* Canvas specific styles */
