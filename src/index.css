@@ -286,7 +286,7 @@ body {
   }
 
   .canvas-container {
-    @apply my-3 mx-2;
+    @apply relative w-full my-10 overflow-hidden rounded-xl;
   }
 
   .toolbar {
@@ -318,7 +318,13 @@ body {
 
 /* Canvas specific styles */
 .canvas-container {
-  @apply relative my-10 overflow-hidden rounded-xl w-fit flex justify-center items-center mx-auto;
+  @apply relative mx-auto w-fit my-10 overflow-hidden rounded-xl;
+}
+
+@media (max-width: 480px) {
+  .canvas-container {
+    @apply relative w-full my-10 overflow-hidden rounded-xl;
+  }
 }
 
 .canvas-overlay {
